@@ -24,7 +24,7 @@ export const processText = async (
       ?.replace(/ORDER|SUBSCRIBE|WISH LIST|Click to View/g, '')
       .trim();
   }, textElement);
-  const [Text, Rated] = (textText?.split('Rated') || []).map((item, index) => {
+  const [Text, Rated] = (textText?.split(/Rated/i) || []).map((item, index) => {
     switch (index) {
       case 0:
         return `<p>${item.trim().replace(/([^-]{2})\s\s+/g, '$1</p><p>')}</p>`;
