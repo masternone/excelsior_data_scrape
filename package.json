@@ -1,0 +1,36 @@
+{
+  "name": "excelsior_data_scrape",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "src/start.ts",
+  "scripts": {
+    "start": "tsc && node ./dist/start.js",
+    "lint": "npx prettier --write ./src/**/* && npx eslint ./src/**/* --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masternone/excelsior_data_scrape.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/masternone/excelsior_data_scrape/issues"
+  },
+  "homepage": "https://github.com/masternone/excelsior_data_scrape#readme",
+  "devDependencies": {
+    "@types/node": "^18.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "eslint": "^8.28.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "prettier": "^2.8.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "puppeteer": "^19.3.0"
+  }
+}
