@@ -1,6 +1,7 @@
 import * as puppeteer from 'puppeteer';
 import { processCredits } from './processCredits.js';
 import { PreviewsWord } from '../types';
+import { processText } from './processText.js';
 
 export const previewsWorld = async ({
   diamondNumber,
@@ -53,24 +54,7 @@ export const previewsWorld = async ({
     );
     await page.waitForSelector(TEXT_SELECTOR);
     const textElement = await page.$(TEXT_SELECTOR);
-    const textText = await page.evaluate((el) => {
-      for (const selector of [
-        '#PageContent > div.CatalogFullDetail > div.Text > div.ItemCode',
-        '#PageContent > div.CatalogFullDetail > div.Text > div.Creators',
-        '#PageContent > div.CatalogFullDetail > div.Text > div.ReleaseDate',
-        '#PageContent > div.CatalogFullDetail > div.Text > div.SRP',
-        '#PageContent > div.CatalogFullDetail > div.Text > a',
-        '#PageContent > div.CatalogFullDetail > div.Text > div:nth-child(7)',
-        '#PageContent > div.CatalogFullDetail > div.Text > div:nth-child(7) > div.pullboxButtons',
-      ]) {
-        const element = document.querySelector(selector);
-        element?.parentNode?.removeChild(element);
-      }
-      return el?.textContent
-        ?.replace(/ORDER|SUBSCRIBE|WISH LIST|Click to View/g, '')
-        .trim();
-    }, textElement);
-    const textSplit = textText?.split('Rated');
+    const processedText = await processText(page, textElement);
     return {
       DiamondNumber: diamondNumber,
       Title: titleText,
@@ -81,8 +65,7 @@ export const previewsWorld = async ({
       'Cover Artist': creatorBreakdown['Cover Artist'].join(', '),
       ReleaseDate: releaseDateText,
       SRP: srpText,
-      Text: textSplit?.[0]?.trim(),
-      Rated: textSplit?.length === 2 ? `Rated ${textSplit?.[1]?.trim()}` : '',
+      ...processedText,
     };
   } catch {
     console.log(`Diamond Number ${diamondNumber} was not found`);
