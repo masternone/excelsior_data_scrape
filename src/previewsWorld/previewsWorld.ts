@@ -20,10 +20,11 @@ export const previewsWorld = async ({
   try {
     await page.waitForSelector(TITLE_SELECTOR);
     const titleElement = await page.$(TITLE_SELECTOR);
-    const titleText = await page.evaluate(
-      (el) => el?.textContent?.trim(),
-      titleElement
-    );
+    const [titleText, issueNumber, variant] = await page.evaluate((el) => {
+      const title = el?.textContent?.trim() || '';
+      const match = title.match(/#(\d+)(.*CVR (\S+))?/);
+      return [title, match?.[1] || '1', match?.[3] || 'A'];
+    }, titleElement);
     await page.waitForSelector(PUBLISHER_SELECTOR);
     const publisherElement = await page.$(PUBLISHER_SELECTOR);
     const publisherText = await page.evaluate(
@@ -58,6 +59,8 @@ export const previewsWorld = async ({
     return {
       DiamondNumber: diamondNumber,
       Title: titleText,
+      IssueNumber: issueNumber,
+      Variant: variant,
       Publisher: publisherText,
       ImageURL: imageURL,
       Writer: creatorBreakdown.Writer.join(', '),

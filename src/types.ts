@@ -18,6 +18,8 @@ export interface DiamondOrder {
 export interface PreviewsWord {
   DiamondNumber: string;
   Title?: string;
+  IssueNumber?: string;
+  Variant?: string;
   Publisher?: string;
   ImageURL?: string;
   Writer?: string;
