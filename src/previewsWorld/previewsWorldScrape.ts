@@ -1,11 +1,12 @@
 import * as puppeteer from 'puppeteer';
 import { previewsWorld } from './previewsWorld.js';
 import { sleep } from '../util/sleep.js';
-import { PreviewsWord } from '../types';
+import { ScrapedData } from '../types';
+import { search } from '../midtowncomics/search.js';
 
 export const previewsWorldScrape = async (
   diamondNumbers: string[]
-): Promise<PreviewsWord[]> => {
+): Promise<ScrapedData[]> => {
   const toReturn = [];
   /**
    * start a new browser
@@ -34,6 +35,11 @@ export const previewsWorldScrape = async (
       diamondNumber,
       page: previewsWorldPage,
     });
+    /**
+     *  Search for the URL at https://www.midtowncomics.com/
+     */
+    // const searchResults = await search({ diamondNumber });
+    // console.log(searchResults);
     toReturn.push(previewsWorldScrape);
     /**
      * close the page

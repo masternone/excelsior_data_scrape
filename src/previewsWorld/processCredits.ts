@@ -1,7 +1,7 @@
 import { Creators } from '../types';
 
 export const processCredits = (credits: string): Creators => {
-  const keys = { W: 'Writer', A: 'Artist', CA: 'Cover Artist', 'A/CA': '' };
+  const keys = { W: 'Writer', A: 'Artist', CA: 'CoverArtist', 'A/CA': '' };
   return credits.split('(').reduce(
     (a, c: string) => {
       if (c !== '') {
@@ -11,12 +11,12 @@ export const processCredits = (credits: string): Creators => {
           case 'W':
           case 'A':
           case 'CA':
-            const key = keys[cSplit[0]] as 'Writer' | 'Artist' | 'Cover Artist';
+            const key = keys[cSplit[0]] as 'Writer' | 'Artist' | 'CoverArtist';
             a[key].push(cSplit[1]);
             break;
           case 'A/CA':
             a['Artist'].push(cSplit[1]);
-            a['Cover Artist'].push(cSplit[1]);
+            a['CoverArtist'].push(cSplit[1]);
             break;
           default:
             console.warn(`Key not Found -> ${cSplit[0]}`);
@@ -24,6 +24,6 @@ export const processCredits = (credits: string): Creators => {
       }
       return a;
     },
-    { Writer: [], Artist: [], 'Cover Artist': [] } as Creators
+    { Writer: [], Artist: [], CoverArtist: [] } as Creators
   );
 };

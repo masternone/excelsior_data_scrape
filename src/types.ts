@@ -5,7 +5,7 @@ export interface Dictionary {
 export interface Creators {
   Writer: string[];
   Artist: string[];
-  'Cover Artist': string[];
+  CoverArtist: string[];
 }
 
 export interface DiamondOrder {
@@ -15,8 +15,19 @@ export interface DiamondOrder {
   UnpickedQuantity: number;
 }
 
-export interface PreviewsWord {
-  DiamondNumber: string;
+export interface LunarOrder {
+  Code: string;
+  Title: string;
+  Qty: number;
+  Retail: string;
+  Discount: string;
+  DiscountedPrice: string;
+  Total: string;
+  UPC: string;
+}
+
+export interface ScrapedData {
+  DiamondNumber?: string;
   Title?: string;
   IssueNumber?: string;
   Variant?: string;
@@ -24,9 +35,10 @@ export interface PreviewsWord {
   ImageURL?: string;
   Writer?: string;
   Artist?: string;
-  'Cover Artist'?: string;
+  CoverArtist?: string;
   ReleaseDate?: string;
   SRP?: string;
   Text?: string;
   Rated?: string; // this could become a set of fixed values
+  UPC?: string;
 }

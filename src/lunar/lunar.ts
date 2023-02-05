@@ -1,23 +1,27 @@
 import * as puppeteer from 'puppeteer';
-import { processCredits } from './processCredits.js';
+import { processCredits } from '../previewsWorld/processCredits.js';
 import { ScrapedData } from '../types';
-import { processText } from './processText.js';
+import { processText } from '../previewsWorld/processText.js';
+import { Puppeteer } from 'puppeteer';
 
-export const previewsWorld = async ({
-  diamondNumber,
+export const lunar = async ({
+  upcNumber,
   page,
 }: {
-  diamondNumber: string;
+  upcNumber: string;
   page: puppeteer.Page;
 }): Promise<ScrapedData> => {
-  const TITLE_SELECTOR = '.CatalogFullDetail .Title';
-  const PUBLISHER_SELECTOR = '.CatalogFullDetail .Publisher';
-  const IMAGE_SELECTOR = '.CatalogFullDetail .ImageContainer img';
-  const CREATORS_SELECTOR = '.CatalogFullDetail .Creators';
-  const RELEASE_DATE_SELECTOR = '.CatalogFullDetail .ReleaseDate';
-  const SRP_SELECTOR = '.CatalogFullDetail .SRP';
-  const TEXT_SELECTOR = '.CatalogFullDetail .Text';
+  const DATA_TRIGGER = '.productitem';
+  const TITLE_SELECTOR = '#ptitle';
+  // const PUBLISHER_SELECTOR = '.CatalogFullDetail .Publisher';
+  const IMAGE_SELECTOR = '#pimg';
+  const CREATORS_SELECTOR = '#pcreators';
+  const RELEASE_DATE_SELECTOR = '#pinstore';
+  const SRP_SELECTOR = '#pretail';
+  const TEXT_SELECTOR = '#pdesc';
   try {
+    await page.waitForSelector(DATA_TRIGGER);
+    await page.click(DATA_TRIGGER);
     await page.waitForSelector(TITLE_SELECTOR);
     const titleElement = await page.$(TITLE_SELECTOR);
     const [titleText, issueNumber, variant] = await page.evaluate((el) => {
@@ -29,14 +33,16 @@ export const previewsWorld = async ({
         : '';
       return [title, match?.[1] || '1', match?.[3] || 'A'];
     }, titleElement);
-    await page.waitForSelector(PUBLISHER_SELECTOR);
-    const publisherElement = await page.$(PUBLISHER_SELECTOR);
-    const publisherText = await page.evaluate(
-      (el) => el?.textContent?.trim(),
-      publisherElement
-    );
+    // await page.waitForSelector(PUBLISHER_SELECTOR);
+    // const publisherElement = await page.$(PUBLISHER_SELECTOR);
+    // const publisherText = await page.evaluate(
+    //   (el) => el?.textContent?.trim(),
+    //   publisherElement
+    // );
     await page.waitForSelector(IMAGE_SELECTOR);
-    const imageElement = await page.$(IMAGE_SELECTOR);
+    const imageElement = (await page.$(
+      IMAGE_SELECTOR
+    )) as puppeteer.ElementHandle<HTMLImageElement> | null;
     const imageURL = await page.evaluate((el) => el?.src, imageElement);
     await page.waitForSelector(CREATORS_SELECTOR);
     const creatorsElement = await page.$(CREATORS_SELECTOR);
@@ -48,37 +54,40 @@ export const previewsWorld = async ({
     await page.waitForSelector(RELEASE_DATE_SELECTOR);
     const releaseDateElement = await page.$(RELEASE_DATE_SELECTOR);
     const releaseDateText = await page.evaluate((el) => {
-      const d = new Date(el?.textContent?.split(':')[1] || '');
-      return d.toISOString();
+      const d = new Date(el?.textContent || '');
+      // return d.toISOString();
+      return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
     }, releaseDateElement);
     await page.waitForSelector(SRP_SELECTOR);
     const srpElement = await page.$(SRP_SELECTOR);
     const srpText = await page.evaluate(
-      (el) => el?.textContent?.split(':')[1].trim(),
+      (el) => el?.textContent || '',
       srpElement
     );
     await page.waitForSelector(TEXT_SELECTOR);
     const textElement = await page.$(TEXT_SELECTOR);
-    const processedText = await processText(page, textElement);
+    const textText = await page.evaluate(
+      (el) => el?.textContent?.trim(),
+      textElement
+    );
     return {
-      DiamondNumber: diamondNumber,
+      UPC: upcNumber,
       Title: titleText,
       IssueNumber: issueNumber,
       Variant: variant,
-      Publisher: publisherText,
       ImageURL: imageURL,
       Writer: creatorBreakdown.Writer.join(', '),
       Artist: creatorBreakdown.Artist.join(', '),
       CoverArtist: creatorBreakdown['CoverArtist'].join(', '),
       ReleaseDate: releaseDateText,
       SRP: srpText,
-      ...processedText,
+      Text: textText,
     };
   } catch {
-    console.log(`Diamond Number ${diamondNumber} was not found`);
+    console.log(`UPC Number ${upcNumber} was not found`);
   }
   return {
-    DiamondNumber: diamondNumber,
-    Title: `Diamond Number ${diamondNumber} was not found`,
+    UPC: upcNumber,
+    Title: `UPC Number ${upcNumber} was not found`,
   };
 };
