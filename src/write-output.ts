@@ -39,6 +39,8 @@ export const objToCsv = ({
           return `"${value.CoverArtist}"`;
         case 'Release Date':
           return `"${value.ReleaseDate}"`;
+        case 'Publication Year':
+          return `"${value.PublicationYear}"`;
         case 'Photo URL':
           return `"${value.ImageURL}"`;
         default:

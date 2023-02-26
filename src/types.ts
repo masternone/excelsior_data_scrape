@@ -37,6 +37,7 @@ export interface ScrapedData {
   Artist?: string;
   CoverArtist?: string;
   ReleaseDate?: string;
+  PublicationYear?: string;
   SRP?: string;
   Text?: string;
   Rated?: string; // this could become a set of fixed values

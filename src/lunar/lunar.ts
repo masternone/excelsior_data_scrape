@@ -80,6 +80,7 @@ export const lunar = async ({
       Artist: creatorBreakdown.Artist.join(', '),
       CoverArtist: creatorBreakdown['CoverArtist'].join(', '),
       ReleaseDate: releaseDateText,
+      PublicationYear: new Date(releaseDateText).getFullYear().toString(),
       SRP: srpText,
       Text: textText,
     };
