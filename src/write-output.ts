@@ -43,6 +43,8 @@ export const objToCsv = ({
           return `"${value.PublicationYear}"`;
         case 'Photo URL':
           return `"${value.ImageURL}"`;
+        case 'Publisher':
+          return `"${value.Publisher}"`;
         default:
           return '';
       }

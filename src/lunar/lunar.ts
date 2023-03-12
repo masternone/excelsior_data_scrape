@@ -19,6 +19,7 @@ export const lunar = async ({
   const RELEASE_DATE_SELECTOR = '#pinstore';
   const SRP_SELECTOR = '#pretail';
   const TEXT_SELECTOR = '#pdesc';
+  const PRODUCT_CODE = '#pcode';
   try {
     await page.waitForSelector(DATA_TRIGGER);
     await page.click(DATA_TRIGGER);
@@ -33,12 +34,6 @@ export const lunar = async ({
         : '';
       return [title, match?.[1] || '1', match?.[3] || 'A'];
     }, titleElement);
-    // await page.waitForSelector(PUBLISHER_SELECTOR);
-    // const publisherElement = await page.$(PUBLISHER_SELECTOR);
-    // const publisherText = await page.evaluate(
-    //   (el) => el?.textContent?.trim(),
-    //   publisherElement
-    // );
     await page.waitForSelector(IMAGE_SELECTOR);
     const imageElement = (await page.$(
       IMAGE_SELECTOR
@@ -70,6 +65,19 @@ export const lunar = async ({
       (el) => el?.textContent?.trim(),
       textElement
     );
+    await page.waitForSelector(PRODUCT_CODE);
+    const productCodeElement = await page.$(PRODUCT_CODE);
+    const publisher = await page.evaluate((el) => {
+      const productCodeText: string | undefined = el?.textContent?.trim();
+      const key = ((productCodeText || '').match(/[A-Z]{2}/) || [''])[0];
+      switch (key) {
+        case 'DC':
+          return 'DC Comics';
+        default:
+          return productCodeText;
+      }
+    }, productCodeElement);
+    console.log({ publisher });
     return {
       UPC: upcNumber,
       Title: titleText,
@@ -83,6 +91,7 @@ export const lunar = async ({
       PublicationYear: new Date(releaseDateText).getFullYear().toString(),
       SRP: srpText,
       Text: textText,
+      Publisher: publisher,
     };
   } catch {
     console.log(`UPC Number ${upcNumber} was not found`);
